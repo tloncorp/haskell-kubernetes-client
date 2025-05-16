@@ -13,6 +13,8 @@ import           Kubernetes.Client.Auth.Internal.Types
 import           Kubernetes.Client.KubeConfig hiding ( token )
 import           Kubernetes.OpenAPI.Core
 import qualified Lens.Micro                    as L
+import qualified Data.Proxy                    as P
+import qualified Data.Data                     as P (typeRep)
 
 #if !MIN_VERSION_base(4,11,0)
 import           Data.Monoid                    ( (<>) )
@@ -49,9 +51,13 @@ setTokenFileAuth f kcfg = atomically $ do
   e <- newTVar (Nothing :: Maybe UTCTime)
   return kcfg
     { configAuthMethods =
-      [ AnyAuthMethod (TokenFileAuth { token = t, expiry = e, file = f, period = 60 })
+      [ AnyAuthMethod
+          typeRep
+          (TokenFileAuth { token = t, expiry = e, file = f, period = 60 })
       ]
     }
+  where
+    typeRep = P.typeRep (P.Proxy :: P.Proxy TokenFileAuth)
 
 getToken :: TokenFileAuth -> IO Text
 getToken auth = getCurrentToken auth >>= maybe (reloadToken auth) return
