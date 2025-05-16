@@ -96,14 +96,14 @@ runExecCommand Exec { config = ExecConfig {..}, decodeToken } = do
 
 instance AuthMethod Exec where
   applyAuthMethod _ plugin req = do
-    token <- runExec plugin
-    pure $
-      if (typeOf plugin `elem` rAuthTypes req)
-        then
+    if (typeOf plugin `elem` rAuthTypes req)
+      then do
+        token <- runExec plugin
+        pure
           (req `setHeader` toHeader ("Authorization", "Bearer " <> token))
           { rAuthTypes = [] }
-        else
-          req
+      else
+        pure req
 
 -- | Defines the 'exec' authentication method.
 execAuth ::
