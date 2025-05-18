@@ -10,6 +10,8 @@ import           Kubernetes.OpenAPI.Core        ( AnyAuthMethod(..)
 import           Kubernetes.OpenAPI.Model       ( AuthApiKeyBearerToken(..) )
 
 import qualified Data.Text                     as T
+import qualified Data.Proxy                    as P
+import qualified Data.Data                     as P (typeRep)
 
 -- |Detects if token is specified in AuthConfig, if it is configures 'KubernetesClientConfig' with 'AuthApiKeyBearerToken'
 tokenAuth :: DetectAuth
@@ -23,5 +25,7 @@ setTokenAuth
   -> KubernetesClientConfig
   -> KubernetesClientConfig
 setTokenAuth t kcfg = kcfg
-  { configAuthMethods = [AnyAuthMethod (AuthApiKeyBearerToken $ "Bearer " <> t)]
+  { configAuthMethods = [AnyAuthMethod typeRep (AuthApiKeyBearerToken $ "Bearer " <> t)]
   }
+  where
+    typeRep = P.typeRep (P.Proxy :: P.Proxy AuthApiKeyBearerToken)
