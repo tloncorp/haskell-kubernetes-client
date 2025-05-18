@@ -35,6 +35,8 @@ import qualified Data.HashMap.Strict as HashMap
 import Data.Text (Text, unpack)
 import Data.Time (UTCTime, getCurrentTime, addUTCTime)
 import Data.Typeable (typeOf)
+import qualified Data.Proxy as P
+import qualified Data.Data as P (typeRep)
 import GHC.Generics (Generic)
 import Kubernetes.Client.Auth.Internal.Types (DetectAuth)
 import Kubernetes.Client.KubeConfig (AuthInfo (..), ExecConfig (..), ExecEnvVar (..))
@@ -96,14 +98,14 @@ runExecCommand Exec { config = ExecConfig {..}, decodeToken } = do
 
 instance AuthMethod Exec where
   applyAuthMethod _ plugin req = do
-    token <- runExec plugin
-    pure $
-      if (typeOf plugin `elem` rAuthTypes req)
-        then
+    if (typeOf plugin `elem` rAuthTypes req)
+      then do
+        token <- runExec plugin
+        pure
           (req `setHeader` toHeader ("Authorization", "Bearer " <> token))
           { rAuthTypes = [] }
-        else
-          req
+      else
+        pure req
 
 -- | Defines the 'exec' authentication method.
 execAuth ::
@@ -120,9 +122,11 @@ execAuth mcache refreshBefore decodeToken AuthInfo {exec} (tlsParams, cfg) = do
     pure
       ( tlsParams
       , cfg
-          { configAuthMethods = [AnyAuthMethod (Exec config decodeToken refreshBefore mcache)]
+          { configAuthMethods = [AnyAuthMethod typeRep (Exec config decodeToken refreshBefore mcache)]
           }
       )
+  where
+    typeRep = P.typeRep (P.Proxy :: P.Proxy Exec)
 
 --------------------------------------------------------------------------------
 -- Cache

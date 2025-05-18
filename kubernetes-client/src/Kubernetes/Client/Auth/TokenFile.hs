@@ -14,6 +14,8 @@ import           Kubernetes.Client.KubeConfig
 import qualified Data.Text                     as T
 import qualified Data.Text.IO                  as T
 import qualified Lens.Micro                    as L
+import qualified Data.Proxy                    as P
+import qualified Data.Data                     as P (typeRep)
 
 data TokenFileAuth = TokenFileAuth { token :: TVar(Maybe Text)
                                    , expiry :: TVar(Maybe UTCTime)
@@ -46,9 +48,12 @@ setTokenFileAuth f kcfg = atomically $ do
   return kcfg
     { configAuthMethods =
       [ AnyAuthMethod
+          typeRep
           (TokenFileAuth { token = t, expiry = e, file = f, period = 60 })
       ]
     }
+  where
+    typeRep = P.typeRep (P.Proxy :: P.Proxy TokenFileAuth)
 
 getToken :: TokenFileAuth -> IO Text
 getToken auth = getCurrentToken auth >>= maybe (reloadToken auth) return
