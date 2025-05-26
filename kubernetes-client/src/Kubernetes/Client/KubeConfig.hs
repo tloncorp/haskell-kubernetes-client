@@ -210,7 +210,7 @@ data ExecConfig = ExecConfig
   , args :: Maybe [Text]
     -- | Environment variables for the execution
   , env :: Maybe [ExecEnvVar]
-  , installHint :: Text
+  , installHint :: Maybe Text
     -- | Ignored for now.
   , apiVersion :: Text
     -- | Ignored for now.
