@@ -49,8 +49,7 @@ setTokenFileAuth f kcfg = atomically $ do
   e <- newTVar (Nothing :: Maybe UTCTime)
   return kcfg
     { configAuthMethods =
-      [ AnyAuthMethod
-          (TokenFileAuth { token = t, expiry = e, file = f, period = 60 })
+      [ AnyAuthMethod (TokenFileAuth { token = t, expiry = e, file = f, period = 60 })
       ]
     }
 

@@ -17,7 +17,6 @@ import Data.Monoid                              ((<>))
 import qualified Data.Text.Encoding            as T
 import qualified Lens.Micro                    as L
 
-
 data BasicAuth = BasicAuth { basicAuthUsername :: Text
                            , basicAuthPassword :: Text
                            }

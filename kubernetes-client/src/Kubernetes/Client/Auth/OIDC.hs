@@ -15,7 +15,7 @@ import Data.Either.Combinators
 import Data.Function                         ((&))
 import Data.Map                              (Map)
 import Data.Maybe
-import Data.Text
+import Data.Text hiding (show)
 import Data.Text.Encoding                    (encodeUtf8)
 import Data.Time.Clock.POSIX                 (getPOSIXTime)
 import Jose.Jwt
