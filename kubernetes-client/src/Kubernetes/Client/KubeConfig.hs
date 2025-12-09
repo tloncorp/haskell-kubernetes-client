@@ -214,11 +214,12 @@ data ExecConfig = ExecConfig
   , args :: Maybe [Text]
     -- | Environment variables for the execution
   , env :: Maybe [ExecEnvVar]
-  , installHint :: Text
     -- | Ignored for now.
-  , apiVersion :: Text
+  , installHint :: Maybe Text
     -- | Ignored for now.
-  , provideClusterInfo :: Bool
+  , apiVersion :: Maybe Text
+    -- | Ignored for now.
+  , provideClusterInfo :: Maybe Bool
     -- | Ignored for now.
   , execInteractiveMode :: Maybe Text
   } deriving (Eq, Generic, Show, Typeable)
