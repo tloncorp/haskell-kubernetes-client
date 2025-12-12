@@ -16,6 +16,8 @@ import Data.Monoid                              ((<>))
 
 import qualified Data.Text.Encoding            as T
 import qualified Lens.Micro                    as L
+import qualified Data.Proxy                    as P
+import qualified Data.Data                     as P (typeRep)
 
 data BasicAuth = BasicAuth { basicAuthUsername :: Text
                            , basicAuthPassword :: Text
@@ -44,5 +46,7 @@ setBasicAuth
   -> KubernetesClientConfig
   -> KubernetesClientConfig
 setBasicAuth u p kcfg = kcfg
-  { configAuthMethods = [AnyAuthMethod (BasicAuth u p)]
+  { configAuthMethods = [AnyAuthMethod typeRep (BasicAuth u p)]
   }
+  where
+    typeRep = P.typeRep (P.Proxy :: P.Proxy BasicAuth)

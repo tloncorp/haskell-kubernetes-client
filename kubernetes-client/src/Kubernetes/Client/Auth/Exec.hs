@@ -35,6 +35,8 @@ import qualified Data.HashMap.Strict as HashMap
 import Data.Text (Text, unpack)
 import Data.Time (UTCTime, getCurrentTime, addUTCTime)
 import Data.Typeable (typeOf)
+import qualified Data.Proxy as P
+import qualified Data.Data as P (typeRep)
 import GHC.Generics (Generic)
 import Kubernetes.Client.Auth.Internal.Types (DetectAuth)
 import Kubernetes.Client.KubeConfig (AuthInfo (..), ExecConfig (..), ExecEnvVar (..))
@@ -120,9 +122,11 @@ execAuth mcache refreshBefore decodeToken AuthInfo {exec} (tlsParams, cfg) = do
     pure
       ( tlsParams
       , cfg
-          { configAuthMethods = [AnyAuthMethod (Exec config decodeToken refreshBefore mcache)]
+          { configAuthMethods = [AnyAuthMethod typeRep (Exec config decodeToken refreshBefore mcache)]
           }
       )
+  where
+    typeRep = P.typeRep (P.Proxy :: P.Proxy Exec)
 
 --------------------------------------------------------------------------------
 -- Cache
