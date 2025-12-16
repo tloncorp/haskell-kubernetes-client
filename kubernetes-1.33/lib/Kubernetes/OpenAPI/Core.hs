@@ -116,9 +116,9 @@ newConfig = do
         }
 
 -- | updates config use AuthMethod on matching requests
-addAuthMethod :: AuthMethod auth => KubernetesClientConfig -> auth -> KubernetesClientConfig
+addAuthMethod :: forall auth. AuthMethod auth => KubernetesClientConfig -> auth -> KubernetesClientConfig
 addAuthMethod config@KubernetesClientConfig {configAuthMethods = as} a =
-  config { configAuthMethods = AnyAuthMethod a : as}
+  config { configAuthMethods = AnyAuthMethod (P.typeRep (P.Proxy :: P.Proxy auth)) a : as}
 
 -- | updates the config to use stdout logging
 withStdoutLogging :: KubernetesClientConfig -> IO KubernetesClientConfig
@@ -414,9 +414,9 @@ class P.Typeable a =>
     -> IO (KubernetesRequest req contentType res accept)
 
 -- | An existential wrapper for any AuthMethod
-data AnyAuthMethod = forall a. AuthMethod a => AnyAuthMethod a deriving (P.Typeable)
+data AnyAuthMethod = forall a. AuthMethod a => AnyAuthMethod P.TypeRep a deriving (P.Typeable)
 
-instance AuthMethod AnyAuthMethod where applyAuthMethod config (AnyAuthMethod a) req = applyAuthMethod config a req
+instance AuthMethod AnyAuthMethod where applyAuthMethod config (AnyAuthMethod _ a) req = applyAuthMethod config a req
 
 -- | indicates exceptions related to AuthMethods
 data AuthMethodException = AuthMethodException String deriving (P.Show, P.Typeable)
@@ -428,10 +428,12 @@ _applyAuthMethods
   :: KubernetesRequest req contentType res accept
   -> KubernetesClientConfig
   -> IO (KubernetesRequest req contentType res accept)
-_applyAuthMethods req config@(KubernetesClientConfig {configAuthMethods = as}) =
-  foldlM go req as
+_applyAuthMethods req config@(KubernetesClientConfig {configAuthMethods = as}) = do
+  let reqWithAuthTypes = P.foldr addAuthTypeToReq req as
+  foldlM go reqWithAuthTypes as
   where
-    go r (AnyAuthMethod a) = applyAuthMethod config a r
+    go r (AnyAuthMethod _ a) = applyAuthMethod config a r
+    addAuthTypeToReq (AnyAuthMethod typeRep _) r = r & L.over rAuthTypesL (typeRep :)
 
 -- * Utils
 

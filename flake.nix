@@ -8,7 +8,7 @@
     url = "github:hercules-ci/gitignore.nix";
     inputs.nixpkgs.follows = "nixpkgs";
   };
-  inputs.nixpkgs.url = "github:nixos/nixpkgs?ref=release-24.05";
+  inputs.nixpkgs.url = "nixpkgs/nixos-unstable";
 
   outputs = { self, flake-utils, gen, gitignore, nixpkgs }:
     flake-utils.lib.eachSystem ["x86_64-linux"] (system:

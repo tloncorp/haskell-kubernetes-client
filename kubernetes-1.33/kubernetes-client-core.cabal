@@ -1,5 +1,5 @@
 name:           kubernetes-client-core
-version:        0.1.0.0
+version:        1.33.0
 synopsis:       Auto-generated kubernetes-client-core API Client
 description:    .
                 Client library for calling the Kubernetes API based on http-client.
@@ -25,7 +25,6 @@ cabal-version:  >= 1.10
 
 extra-source-files:
     README.md
-    openapi.yaml
 
 Flag UseKatip
   Description: Use the katip package to provide logging (if false, use the default monad-logger package)
@@ -45,7 +44,7 @@ library
     , containers >=0.5.0.0 && <0.8
     , deepseq >= 1.4 && <1.6
     , exceptions >= 0.4
-    , http-api-data >= 0.3.4 && <0.6
+    , http-api-data >= 0.3.4 && <0.7
     , http-client >=0.5 && <0.8
     , http-client-tls
     , http-media >= 0.4 && < 0.9

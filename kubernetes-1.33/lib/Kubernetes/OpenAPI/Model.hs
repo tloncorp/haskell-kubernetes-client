@@ -155,9 +155,6 @@ newtype Previous = Previous { unPrevious :: Bool } deriving (P.Eq, P.Show)
 -- ** PropagationPolicy
 newtype PropagationPolicy = PropagationPolicy { unPropagationPolicy :: Text } deriving (P.Eq, P.Show)
 
--- ** ResourcePlural
-newtype ResourcePlural = ResourcePlural { unResourcePlural :: Text } deriving (P.Eq, P.Show)
-
 -- ** ResourceVersion
 newtype ResourceVersion = ResourceVersion { unResourceVersion :: Text } deriving (P.Eq, P.Show)
 
