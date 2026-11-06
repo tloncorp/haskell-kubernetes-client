@@ -30,14 +30,14 @@ jobs:
         - "9.6.5"
         - "9.8.2"
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-    - uses: haskell-actions/setup@v2
+    - uses: haskell-actions/setup@0f8e8c99d88aeb3fbfd523f1ef2c6f762d10d64d # v2
       with:
         ghc-version: ${{ matrix.compiler.ghc }}
         cabal-version: '3.10.3.0'
 
-    - uses: cachix/install-nix-action@v27
+    - uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
 
     - run: |
         nix run .#set-cabal-version -- "${{matrix.k8s_release}}" cabal.project
@@ -83,17 +83,17 @@ jobs:
         - ghc: "9.8.2"
           yaml: "stack.yaml"
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-    - uses: haskell-actions/setup@v2
+    - uses: haskell-actions/setup@0f8e8c99d88aeb3fbfd523f1ef2c6f762d10d64d # v2
       with:
         ghc-version: ${{ matrix.compiler.ghc }}
         enable-stack: true
         stack-version: "latest"
 
-    - uses: cachix/install-nix-action@v27
+    - uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
 
-    - uses: actions/cache@v4
+    - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
       name: Cache ~/.stack
       with:
         path: ~/.stack
